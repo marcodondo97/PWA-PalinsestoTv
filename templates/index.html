@@ -1,0 +1,129 @@
+{% extends 'layout.html' %}
+
+{% block title %}Palinsesto TV{% endblock %}
+
+{% block content %}
+{% if channels|length == 0 %}
+  <div class="alert alert-warning d-flex align-items-center">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <div>
+      <strong>Nessun dato disponibile</strong><br>
+      <small>Impossibile caricare i palinsesti TV al momento. Riprova più tardi.</small>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Current Date Display -->
+<div class="text-center text-white mb-3">
+  <div class="current-date">
+    <i class="bi bi-calendar-event me-2"></i>
+    <span class="fw-bold">{{ italian_date }}</span>
+  </div>
+</div>
+
+<!-- Channel Selector - Mobile First -->
+<div class="channel-selector mb-3">
+  <div class="d-flex gap-2 overflow-auto px-2">
+    {% for c in channels %}
+      <a class="channel-btn btn {% if c == active_channel %}btn-primary{% else %}btn-outline-light{% endif %} d-flex align-items-center gap-2 flex-shrink-0" href="{{ url_for('index', channel=c) }}">
+        <img src="{{ url_for('static', filename=logo_map.get(c, '') ) }}" alt="{{ c }}" width="20" height="20" onerror="this.style.display='none'" />
+        <span class="text-truncate" style="max-width: 100px;">{{ c }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Active Channel Programs -->
+{% if active_channel %}
+  {% set programs = programs_by_channel.get(active_channel, []) %}
+  <div class="channel-content">
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <img src="{{ url_for('static', filename=logo_map.get(active_channel, '') ) }}" alt="{{ active_channel }}" width="32" height="32" onerror="this.style.display='none'" />
+      <h5 class="mb-0">{{ active_channel }}</h5>
+      <span class="badge bg-secondary">
+        <i class="bi bi-collection-play me-1"></i>{{ programs|length }} programmi
+      </span>
+    </div>
+    
+    {% if programs|length == 0 %}
+      <div class="text-center text-muted py-5">
+        <i class="bi bi-tv display-4 text-muted mb-3"></i>
+        <h6 class="text-muted">Nessun programma disponibile</h6>
+        <p class="small text-muted mb-0">Non ci sono programmi in onda per questo canale al momento.</p>
+      </div>
+    {% else %}
+      <div class="program-list">
+        {% for program in programs %}
+          <div class="program-item {% if loop.index0 == current_program_index %}current-program{% endif %}">
+            <div class="d-flex align-items-center gap-3 p-3 border-bottom border-secondary">
+              <div class="time-badge">
+                {% if program.time %}
+                  <span class="badge bg-primary rounded-pill px-3 py-2">
+                    <i class="bi bi-clock me-1"></i>{{ program.time }}
+                  </span>
+                {% else %}
+                  <span class="badge bg-secondary rounded-pill px-3 py-2">
+                    <i class="bi bi-clock me-1"></i>--:--
+                  </span>
+                {% endif %}
+              </div>
+              <div class="program-title flex-grow-1">
+                <h6 class="mb-0">{{ program.title }}</h6>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+<!-- Desktop View - All Channels -->
+<div class="d-none d-md-block mt-5">
+  <h5 class="mb-3 text-white">
+    <i class="bi bi-grid-3x3-gap me-2"></i>Tutti i canali
+  </h5>
+  <div class="row">
+    {% for channel in channels %}
+      {% set programs = programs_by_channel.get(channel, []) %}
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+          <div class="card-header d-flex align-items-center gap-2">
+            <img src="{{ url_for('static', filename=logo_map.get(channel, '') ) }}" alt="{{ channel }}" width="24" height="24" onerror="this.style.display='none'" />
+            <h6 class="mb-0">{{ channel }}</h6>
+            <span class="badge bg-secondary ms-auto">
+              <i class="bi bi-collection-play me-1"></i>{{ programs|length }}
+            </span>
+          </div>
+          <div class="card-body p-0">
+            {% if programs|length == 0 %}
+              <div class="p-4 text-center text-muted">
+                <i class="bi bi-tv text-muted mb-2"></i>
+                <div class="small">Nessun programma</div>
+              </div>
+            {% else %}
+              <div class="list-group list-group-flush">
+                {% for program in programs[:8] %}
+                  <div class="list-group-item d-flex align-items-center gap-2 py-2">
+                    <small class="text-muted">
+                      <i class="bi bi-clock me-1"></i>{{ program.time or '--:--' }}
+                    </small>
+                    <span class="text-truncate">{{ program.title }}</span>
+                  </div>
+                {% endfor %}
+                {% if programs|length > 8 %}
+                  <div class="list-group-item text-center text-muted small">
+                    <i class="bi bi-three-dots me-1"></i>+{{ programs|length - 8 }} altri programmi
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+
