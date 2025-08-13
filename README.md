@@ -20,7 +20,7 @@ The app shows real-time TV schedules for 7 major Italian channels with a modern 
    # navigate http://localhost:8080
    ```
 
-## User Flow
+## Result
 <div align="left">
 <table>
   <tr>
