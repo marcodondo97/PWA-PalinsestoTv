@@ -1,4 +1,4 @@
-# Palinsesto TV
+# Palinsesto Tv PWA
 
 A modern Progressive Web App (PWA) that displays Italian TV program schedules in real-time with a beautiful, responsive interface.
 
