@@ -10,7 +10,7 @@ Palinsesto TV is a Flask-based web application that scrapes and displays TV prog
 
 The app shows real-time TV schedules for 7 major Italian channels with a modern glassmorphism design that works on all devices. As a PWA, it supports offline use and mobile installation. It’s fully localized in Italian and highlights the current program. Built with Flask backend and HTML/CSS/JS frontend, it uses web scraping to get data and includes custom styling with Bootstrap Icons.
 
-### Getting Started
+## Getting Started
 
  **Build and run with Docker**
 
